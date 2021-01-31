@@ -1,7 +1,7 @@
 package net
 
 import (
-	"custom_tool/tool"
+	"github.com/hhhkk/custom_tool/tool"
 	"io"
 	"net/http"
 	"os"

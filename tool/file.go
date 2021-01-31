@@ -1,7 +1,7 @@
 package tool
 
 import (
-	"custom_tool/log"
+	"github.com/hhhkk/custom_tool/log"
 	"errors"
 	"os"
 	"path/filepath"

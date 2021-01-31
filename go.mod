@@ -1,4 +1,4 @@
-module custom_tool
+module github.com/hhhkk/custom_tool
 
 go 1.15
 

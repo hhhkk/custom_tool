@@ -1,8 +1,8 @@
 package main
 
 import (
-	"custom_tool/net"
-	"custom_tool/tool"
+	"github.com/hhhkk/custom_tool/net"
+	"github.com/hhhkk/custom_tool/tool"
 )
 
 func main() {

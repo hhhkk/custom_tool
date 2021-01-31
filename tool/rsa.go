@@ -10,7 +10,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
-	"custom_tool/log"
+	"github.com/hhhkk/custom_tool/log"
 )
 
 var private *rsa.PrivateKey

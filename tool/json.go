@@ -3,7 +3,7 @@ package tool
 import (
 	"bytes"
 	"encoding/json"
-	"custom_tool/log"
+	"github.com/hhhkk/custom_tool/log"
 )
 
 func ToString(obj *interface{}) *string {

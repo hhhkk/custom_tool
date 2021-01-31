@@ -3,8 +3,8 @@ package net
 import (
 	"compress/gzip"
 	"crypto/tls"
-	"custom_tool/log"
-	"custom_tool/tool"
+	"github.com/hhhkk/custom_tool/log"
+	"github.com/hhhkk/custom_tool/tool"
 	"github.com/andybalholm/brotli"
 	"io"
 	"net/http"
