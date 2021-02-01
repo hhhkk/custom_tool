@@ -1,6 +1,7 @@
 package net
 
 import (
+	"fmt"
 	"github.com/hhhkk/custom_tool/tool"
 	"io"
 	"net/http"
@@ -35,6 +36,7 @@ func check(response *http.Response, isSuccess *bool, url string, path string, le
 		if response.Header.Get("Accept-Ranges") == "bytes" {
 			startSliceDownload(url, file, length)
 		} else {
+			fmt.Println("DownloadByFile")
 			*isSuccess = DownloadByFile(url, file)
 		}
 	}, nil)
@@ -68,6 +70,7 @@ func slice(url string, file *os.File, ints chan int, start int64, end int64) {
 			reader.Read(bytes)
 			file.Write(bytes)
 			file.Sync()
+			fmt.Println("slice",start,end)
 		}
 	}, func(err error) {
 

@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	net.SliceDownload("https://images.unsplash.com/photo-1572811185759-6e759e27dcd8?ixid=MXwxMjA3fDB8MXxhbGx8ODMyMDl8fHx8fHwyfA&ixlib=rb-1.2.1",
+	net.SliceDownload("http://192.168.31.107/file/img/t1/photo-1572811185759-6e759e27dcd8",
 		tool.GetCwdPath()+"/test.jpg")
 }
