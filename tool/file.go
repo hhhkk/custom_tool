@@ -1,8 +1,8 @@
 package tool
 
 import (
-	"github.com/hhhkk/custom_tool/log"
 	"errors"
+	"github.com/hhhkk/custom_tool/log"
 	"os"
 	"path/filepath"
 )
@@ -57,15 +57,18 @@ func GetCwdPath() string {
 	}
 }
 
-func CreateFile(path string, success func(*os.File), fail func(error)) {
+func CreateFile(path string, success func(*os.File), fail func(error)) *os.File {
 	if file, err := os.Create(path); err == nil {
-		defer file.Close()
 		if success != nil {
+			defer file.Close()
 			success(file)
+		}else{
+			return file
 		}
 	} else if fail != nil {
 		fail(err)
 	}
+	return nil
 }
 func GetFileSize(path string) int64 {
 	if info, err := os.Stat(path); err == nil {
@@ -76,10 +79,13 @@ func GetFileSize(path string) int64 {
 	return 0
 }
 
-func Open(path string, success func(file *os.File), fail func(err error)) {
+func Open(path string, success func(file *os.File), fail func(err error)) *os.File {
 	if file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm); err == nil {
 		if success != nil {
+			defer file.Close()
 			success(file)
+		} else {
+			return file
 		}
 	} else {
 		log.E(err)
@@ -87,4 +93,5 @@ func Open(path string, success func(file *os.File), fail func(err error)) {
 			fail(err)
 		}
 	}
+	return nil
 }
