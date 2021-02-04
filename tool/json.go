@@ -19,3 +19,11 @@ func ToString(obj *interface{}) *string {
 		}
 	}
 }
+
+func Encoding(obj *interface{},data *[]byte)*interface{} {
+	if json.Unmarshal(*data,obj)==nil{
+		return obj
+	}else{
+		return nil
+	}
+}
