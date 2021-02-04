@@ -2,6 +2,8 @@ package tool
 
 import (
 	"errors"
+	"github.com/h2non/filetype"
+	"github.com/h2non/filetype/types"
 	"github.com/hhhkk/custom_tool/log"
 	"os"
 	"path/filepath"
@@ -11,10 +13,6 @@ var cwdPath string
 
 var hookCwdPathFunc func() string
 
-func HookCwdPath(hook func() string) {
-	hookCwdPathFunc = hook
-}
-
 func init() {
 	cwdPath = os.Args[0]
 	if dir, err := filepath.Abs(filepath.Dir(os.Args[0])); err == nil {
@@ -22,6 +20,22 @@ func init() {
 	} else {
 		log.Fatal(err)
 	}
+}
+
+func GetFileType(path string) types.Type {
+	if file, err := os.Open(path); err == nil {
+		bytes := make([]byte, 256)
+		file.Read(bytes)
+		file.Read(bytes)
+		if class, err := filetype.Get(bytes); err == nil {
+			return class
+		}
+	}
+	return types.Unknown
+}
+
+func HookCwdPath(hook func() string) {
+	hookCwdPathFunc = hook
 }
 
 func IsExist(path string) bool {
@@ -62,7 +76,7 @@ func CreateFile(path string, success func(*os.File), fail func(error)) *os.File 
 		if success != nil {
 			defer file.Close()
 			success(file)
-		}else{
+		} else {
 			return file
 		}
 	} else if fail != nil {
