@@ -12,6 +12,11 @@ var cacheDir string
 
 func init() {
 	cacheDir = tool.GetCwdPath() + "/cache/"
+	if !tool.IsExist(cacheDir) {
+		if err := os.Mkdir(cacheDir, os.ModePerm); err != nil {
+			panic(err)
+		}
+	}
 }
 
 func Save(md5 string, data io.Reader) {
