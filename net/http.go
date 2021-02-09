@@ -3,9 +3,11 @@ package net
 import (
 	"compress/gzip"
 	"crypto/tls"
+	"fmt"
+	"github.com/andybalholm/brotli"
+	"github.com/hhhkk/custom_tool/cache"
 	"github.com/hhhkk/custom_tool/log"
 	"github.com/hhhkk/custom_tool/tool"
-	"github.com/andybalholm/brotli"
 	"io"
 	"net/http"
 	"net/url"
@@ -126,6 +128,31 @@ func getClient() *http.Client {
 	}
 }
 
+func RequestByCache(req *http.Request, success func(io.Reader, *http.Response), fail func(error)) {
+	md5Value := tool.GetMd5Value(req.URL.String())
+	if cache.IsExist(md5Value) {
+		if data := cache.Get(md5Value); data != nil {
+			if success != nil {
+				success(data,nil)
+			}
+		}else{
+			if fail!=nil {
+				fail(fmt.Errorf("read cache error"))
+			}
+		}
+	} else {
+		Request(req, func(reader io.Reader, response *http.Response) {
+			cache.Save(md5Value, reader)
+			if success != nil {
+				success(reader, response)
+			}
+		}, func(err error) {
+			if fail != nil {
+				fail(err)
+			}
+		})
+	}
+}
 func Request(req *http.Request, success func(io.Reader, *http.Response), fail func(error)) {
 	client := getClient()
 	if resp, err := client.Do(req); err == nil {
