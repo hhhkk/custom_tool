@@ -22,7 +22,7 @@ func ToString(obj *interface{}) *string {
 	}
 }
 
-func Encoding(obj *interface{},data *[]byte)*interface{} {
+func Encoding(obj interface{},data *[]byte) interface{} {
 	if json.Unmarshal(*data,obj)==nil{
 		return obj
 	}else{
@@ -30,7 +30,7 @@ func Encoding(obj *interface{},data *[]byte)*interface{} {
 	}
 }
 
-func EncodingByReader(obj *interface{},data io.Reader)*interface{} {
+func EncodingByReader(obj interface{},data io.Reader)interface{} {
 	if byteData,err := ioutil.ReadAll(data);err ==nil{
 		return Encoding(obj,&byteData)
 	}else{
