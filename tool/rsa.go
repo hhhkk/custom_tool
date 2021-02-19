@@ -63,7 +63,7 @@ func Getkeys(path string) {
 //使用公钥进行加密
 func Encrypter(msg *[]byte) *[]byte {
 	if public==nil {
-		log.Fatal(errors.New("Please initialize Public Key"))
+		log.LibFatal(errors.New("Please initialize Public Key"))
 	}
 	//x509解码,得到一个interface类型的pub
 	//加密操作,需要将接口类型的pub进行类型断言得到公钥类型
@@ -80,7 +80,7 @@ func Encrypter(msg *[]byte) *[]byte {
 //使用私钥进行解密
 func Decrypter(cipherText *string) *string {
 	if private==nil {
-		log.Fatal(errors.New("Please initialize Private Key"))
+		log.LibFatal(errors.New("Please initialize Private Key"))
 	}
 	data, _ := base64.StdEncoding.DecodeString(*cipherText)
 	if afterDecrypter, err := rsa.DecryptPKCS1v15(rand.Reader, private, data); err == nil {

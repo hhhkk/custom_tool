@@ -1,6 +1,7 @@
 package net
 
 import (
+	"bufio"
 	"compress/gzip"
 	"crypto/tls"
 	"fmt"
@@ -58,7 +59,7 @@ func BuildRequest(url, method string, body io.Reader) *http.Request {
 		}
 		return request
 	} else {
-		log.Fatal(err)
+		log.LibFatal(err)
 	}
 	return nil
 }
@@ -84,7 +85,7 @@ func BuildProxy(ip, port string) *func(*http.Request) (*url.URL, error) {
 		obj := http.ProxyURL(porxyUrl)
 		return &obj
 	} else {
-		log.Fatal(err)
+		log.LibFatal(err)
 	}
 	return nil
 }
@@ -157,30 +158,31 @@ func Request(req *http.Request, success func(io.Reader, *http.Response), fail fu
 	client := getClient()
 	if resp, err := client.Do(req); err == nil {
 		defer resp.Body.Close()
+		buffer := bufio.NewReader(resp.Body)
 		switch resp.Header.Get("Content-Encoding") {
 		case "gzip":
-			if reader, err := gzip.NewReader(resp.Body); err == nil {
+			if reader, err := gzip.NewReader(buffer); err == nil {
 				if success != nil {
 					success(reader, resp)
 				}
 			} else {
-				log.E(err)
+				log.LibE(err)
 				if fail != nil {
 					fail(err)
 				}
 			}
 		case "br":
-			reader := brotli.NewReader(resp.Body)
+			reader := brotli.NewReader(buffer)
 			if success != nil {
 				success(reader, resp)
 			}
 		default:
 			if success != nil {
-				success(resp.Body, resp)
+				success(buffer, resp)
 			}
 		}
 	} else {
-		log.E(err)
+		log.LibE(err)
 		if fail != nil {
 			fail(err)
 		}

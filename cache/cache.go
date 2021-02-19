@@ -24,17 +24,18 @@ func Save(md5 string, data io.Reader) {
 	if !tool.IsExist(path) {
 		tool.CreateFile(path, func(file *os.File) {
 			if _, err := io.Copy(file, data); err != nil {
-				log.E(fmt.Errorf("save cache copy file fail"))
+
+				log.LibE(fmt.Errorf("save cache copy file fail"))
 			}
 		}, func(err error) {
-			log.E(fmt.Errorf("save cache create file fail"))
+			log.LibE(fmt.Errorf("save cache create file fail"))
 		})
 	} else {
-		log.E(fmt.Errorf("save cache fail cache exist"))
+		log.LibE(fmt.Errorf("save cache fail cache exist"))
 	}
 }
 
-func Get(md5 string) io.Reader {
+func Get(md5 string) *os.File {
 	return tool.Open(cacheDir+md5, nil, nil)
 }
 

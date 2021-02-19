@@ -18,7 +18,7 @@ func init() {
 	if dir, err := filepath.Abs(filepath.Dir(os.Args[0])); err == nil {
 		cwdPath = dir
 	} else {
-		log.Fatal(err)
+		log.LibFatal(err)
 	}
 }
 
@@ -44,7 +44,7 @@ func IsExist(path string) bool {
 	} else if os.IsNotExist(err) {
 		return false
 	} else {
-		log.Fatal(err)
+		log.LibFatal(err)
 		return false
 	}
 }
@@ -72,7 +72,7 @@ func GetCwdPath() string {
 }
 
 func CreateFile(path string, success func(*os.File), fail func(error)) *os.File {
-	if file, err := os.Create(path); err == nil {
+	if file, err := os.OpenFile(path,os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.ModePerm); err == nil {
 		if success != nil {
 			defer file.Close()
 			success(file)
@@ -94,7 +94,7 @@ func GetFileSize(path string) int64 {
 }
 
 func Open(path string, success func(file *os.File), fail func(err error)) *os.File {
-	if file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm); err == nil {
+	if file, err := os.Open(path); err == nil {
 		if success != nil {
 			defer file.Close()
 			success(file)
@@ -102,7 +102,7 @@ func Open(path string, success func(file *os.File), fail func(err error)) *os.Fi
 			return file
 		}
 	} else {
-		log.E(err)
+		log.LibE(err)
 		if fail != nil {
 			fail(err)
 		}

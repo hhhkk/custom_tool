@@ -16,7 +16,7 @@ func ToString(obj *interface{}) *string {
 			jsonStr := bytes.NewBuffer(data).String()
 			return &jsonStr
 		}else{
-			log.Fatal(err)
+			log.LibFatal(err)
 			return nil
 		}
 	}
