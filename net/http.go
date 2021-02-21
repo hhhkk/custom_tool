@@ -1,7 +1,6 @@
 package net
 
 import (
-	"bufio"
 	"compress/gzip"
 	"crypto/tls"
 	"fmt"
@@ -143,7 +142,9 @@ func RequestByCache(req *http.Request, success func(io.Reader, *http.Response), 
 		}
 	} else {
 		Request(req, func(reader io.Reader, response *http.Response) {
-			cache.Save(md5Value, reader)
+			if response!=nil&&response.StatusCode==200 {
+				cache.Save(md5Value, reader)
+			}
 			if success != nil {
 				success(reader, response)
 			}
@@ -158,10 +159,10 @@ func Request(req *http.Request, success func(io.Reader, *http.Response), fail fu
 	client := getClient()
 	if resp, err := client.Do(req); err == nil {
 		defer resp.Body.Close()
-		buffer := bufio.NewReader(resp.Body)
 		switch resp.Header.Get("Content-Encoding") {
 		case "gzip":
-			if reader, err := gzip.NewReader(buffer); err == nil {
+			if reader, err := gzip.NewReader(resp.Body); err == nil {
+				defer reader.Close()
 				if success != nil {
 					success(reader, resp)
 				}
@@ -172,13 +173,13 @@ func Request(req *http.Request, success func(io.Reader, *http.Response), fail fu
 				}
 			}
 		case "br":
-			reader := brotli.NewReader(buffer)
+			reader := brotli.NewReader(resp.Body)
 			if success != nil {
 				success(reader, resp)
 			}
 		default:
 			if success != nil {
-				success(buffer, resp)
+				success(resp.Body, resp)
 			}
 		}
 	} else {
